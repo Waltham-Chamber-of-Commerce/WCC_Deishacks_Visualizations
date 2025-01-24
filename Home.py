@@ -217,8 +217,8 @@ pl.io.templates.default = 'plotly'
 
 
 #Title with custom formatting
-st.markdown("<p style='text-align: center; font-size: 3em; font-weight: bold; color: #003478; margin-bottom: 0.5em; line-height: 1.2;'>Hiatt Career Center -- Advanced Visualization Creator<p>", unsafe_allow_html=True)
-st.markdown('<p style="text-align: center; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created By: Rowan Scassellati and Jon Schlesinger</p>', unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size: 3em; font-weight: bold; color: #003478; margin-bottom: 0.5em; line-height: 1.2;'>Waltham Chamber of Commerce -- Advanced Visualization Creator<p>", unsafe_allow_html=True)
+st.markdown('<p style="text-align: center; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created By: Rowan Scassellati, Caitlyn Pennie, and Isabel Roseth</p>', unsafe_allow_html=True)
 st.html(
     '''
     <style>
