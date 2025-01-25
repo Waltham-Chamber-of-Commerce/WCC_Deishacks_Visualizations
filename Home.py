@@ -236,3 +236,19 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     
     scatterPlot = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
     addChartToPage(scatterPlot)
+    
+    scatterPlot2 = px.bar(
+    df,
+    x="Number of attendees from your company?",
+    y="Is your organization a member of the Waltham Chamber of Commerce?",
+    color="Is your organization a member of the Waltham Chamber of Commerce?", 
+    title="Attendance by Membership Status",
+    labels={
+        "Number of attendees from your company?": "Number of Attendees",
+        "Is your organization a member of the Waltham Chamber of Commerce?": "Membership Status",
+    },
+    text="Number of attendees from your company?", 
+)
+    addChartToPage(scatterPlot2)
+
+ ### charts for income 
