@@ -2,28 +2,9 @@
 import pandas as pd
 import numpy as np
 import plotly as pl
-
-import matplotlib.pyplot as plt
-import os
-import xarray as xr
-
 import streamlit as st 
-import matplotlib
-import mpld3
-import streamlit.components.v1 as components
-import matplotlib as mpl
-from matplotlib import cm
-from matplotlib import colors
-import datetime
-import plotly.graph_objects as go
-import statistics
 import plotly.express as px
-from plotly.subplots import make_subplots
 import re
-from io import BytesIO
-import streamlit as st
-import pandas as pd
-from io import StringIO
 
 
 #Function to add any chart to the page, and account for the click interactivity
@@ -311,3 +292,18 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
 
     barChart4 = px.bar(grouped, x=grouped.index, y="Number of attendees from your company?")
     addChartToPage(barChart4)
+
+    
+    scatterPlot2 = px.bar(
+    df,
+    x="Number of attendees from your company?",
+    y="Is your organization a member of the Waltham Chamber of Commerce?",
+    color="Is your organization a member of the Waltham Chamber of Commerce?", 
+    title="Attendance by Membership Status",
+    labels={
+        "Number of attendees from your company?": "Number of Attendees",
+        "Is your organization a member of the Waltham Chamber of Commerce?": "Membership Status",
+    },
+    text="Number of attendees from your company?", 
+    )
+    addChartToPage(scatterPlot2)
