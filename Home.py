@@ -132,6 +132,10 @@ div[class*="stNumberInput"] label p {
   font-size: 20px;
 }
 
+div[class*="stTextInput"] label p {
+  font-size: 20px;
+}
+
 div[class*="stRadio"] label p {
   font-size: 20px;
 
@@ -168,34 +172,12 @@ else:
 if uploaded_file is None:
     st.session_state['checkFile'] = True
 
-
-
-
-#Process the data file once uploaded
-if uploaded_file is not None and st.session_state['checkFile'] == True:
-    st.session_state['dataFile'] = uploaded_file
-
-    #Read the excel file and different sheets, using a faster calamine engine
-    xls = pd.read_excel(uploaded_file, engine = 'calamine', sheet_name=['Sheet1'])
-
-    # Access individual sheets using sheet names
-    temp_df = xls['Sheet1']
-
-    temp_df["Is your organization a sponsor of this event?"] = temp_df["Is your organization a sponsor of this event?"].str.lower().map({'yes': True, 'no': False})
-    temp_df["Is your organization a member of the Waltham Chamber of Commerce?"] = temp_df["Is your organization a member of the Waltham Chamber of Commerce?"].str.lower().map({'yes': True, 'no': False})
-    temp_df['Timestamp'] = pd.to_datetime(temp_df['Timestamp']).dt.date
-
-    dateNamePairing = pd.read_excel("DateNamePairings.xlsx", engine = 'calamine', sheet_name=['Sheet1'])['Sheet1']
-
-
-    dateNamePairing['Date'] = pd.to_datetime(dateNamePairing['Date']).dt.date
-
-
+def findPairings(dateRemoved = None):
+    dateNamePairing = st.session_state['dateNamePairing']
+    temp_df = st.session_state['originalDF'].copy()
     mappingPairs = {}
     for ind in dateNamePairing.index:
         mappingPairs[dateNamePairing.loc[ind]['Date']] = dateNamePairing.loc[ind]
-
-
 
     st.session_state['Unknown Dates'] = []
     eventName = []
@@ -217,22 +199,89 @@ if uploaded_file is not None and st.session_state['checkFile'] == True:
     temp_df['nonMemberPrice'] = nonMemberPrice
     temp_df['memberPrice'] = memberPrice
 
+    temp_df.dropna(subset=['eventName'], inplace=True)
+    st.session_state['df'] = temp_df
+
+    
+
+def updatePairingFile(date, title, eventMemberPrice, eventNonMemberPrice):
+    currentDF = st.session_state['dateNamePairing']
+    currentDF.loc[len(currentDF)] = [date, title, eventMemberPrice, eventNonMemberPrice]
+    currentDF.to_excel('DateNamePairings.xlsx', index=False)
+    st.session_state['dateNamePairing'] = currentDF
+    findPairings(date)
+
+
+#Process the data file once uploaded
+if uploaded_file is not None and st.session_state['checkFile'] == True:
+    st.session_state['dataFile'] = uploaded_file
+
+    #Read the excel file and different sheets, using a faster calamine engine
+    xls = pd.read_excel(uploaded_file, engine = 'calamine', sheet_name=['Sheet1'])
+
+    # Access individual sheets using sheet names
+    temp_df = xls['Sheet1']
+
+    temp_df["Is your organization a sponsor of this event?"] = temp_df["Is your organization a sponsor of this event?"].str.lower().map({'yes': True, 'no': False})
+    temp_df["Is your organization a member of the Waltham Chamber of Commerce?"] = temp_df["Is your organization a member of the Waltham Chamber of Commerce?"].str.lower().map({'yes': True, 'no': False})
+    temp_df['Timestamp'] = pd.to_datetime(temp_df['Timestamp']).dt.date
+
+    dateNamePairing = pd.read_excel("DateNamePairings.xlsx", engine = 'calamine', sheet_name=['Sheet1'])['Sheet1']
+
+
+    dateNamePairing['Date'] = pd.to_datetime(dateNamePairing['Date']).dt.date
+
+    st.session_state['dateNamePairing'] = dateNamePairing
+
+    
+
 
     st.session_state['checkFile'] = False
     st.session_state['currentGraphs'] = []
-    st.session_state['df'] = temp_df
+    st.session_state['originalDF'] = temp_df
+    st.session_state['updatedMissingData'] = False
+    findPairings()
+
     #Reload the page once everything has been processed so the prompt to input data is removed
     st.rerun()
     
 print("Website reloaded!")
+
+
 
 #Once the file has been uploaded, this will always run
 if uploaded_file is not None and st.session_state['checkFile'] == False:
     df = st.session_state['df']
     st.dataframe(df)
 
-    st.write("There are some dates needing updates!")
-    st.write(st.session_state['Unknown Dates'])
+    if st.session_state['updatedMissingData']:
+        st.toast("Information submitted, thank you for updating the data!")
+    st.session_state['updatedMissingData'] = False
+    unknownDates = st.session_state['Unknown Dates']
+    if (len(unknownDates) != 0):
+        st.write("There are some dates needing updates!")
+        for realDate in unknownDates:
+            date = str(realDate)
+            with st.form(date):
+                title = st.text_input("If there was an event on " + date + ", please input the name of the event", value = "Event Name Here",key = "Title" + date)
+                eventMemberPrice = st.number_input("Please input the price of the event for members", min_value=0, value=None, step=1, key = "Member" + date)
+                eventNonMemberPrice = st.number_input("Please input the price of the event for nonmembers", min_value=0, value=None, step=1, key = "Nonmember" + date)
+                notEvent = st.checkbox("If there was not a Waltham Chamber of Commerce event on that day, please click this box. Please note: This cannot be undone once submitted")
+                submitButton = st.form_submit_button("Submit information")
+
+                if submitButton:
+                    if (eventMemberPrice != None and eventNonMemberPrice != None and title != "Event Name Here") or notEvent:
+                        if notEvent:
+                            updatePairingFile(realDate, None, None, None)
+                        else:
+                            updatePairingFile(realDate, title, eventMemberPrice, eventNonMemberPrice)
+                        st.session_state['updatedMissingData'] = True
+                        
+                        st.rerun()
+                    else:
+                        st.write(":red[Some data has not been updated yet. Please update all fields and then submit again.]")
+
+        # st.write(st.session_state['Unknown Dates'])
     
     scatterPlot = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
     addChartToPage(scatterPlot)
