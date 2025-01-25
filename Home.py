@@ -179,17 +179,60 @@ if uploaded_file is not None and st.session_state['checkFile'] == True:
     xls = pd.read_excel(uploaded_file, engine = 'calamine', sheet_name=['Sheet1'])
 
     # Access individual sheets using sheet names
-    st.session_state['df'] = xls['Sheet1']
+    temp_df = xls['Sheet1']
+
+    temp_df["Is your organization a sponsor of this event?"] = temp_df["Is your organization a sponsor of this event?"].str.lower().map({'yes': True, 'no': False})
+    temp_df["Is your organization a member of the Waltham Chamber of Commerce?"] = temp_df["Is your organization a member of the Waltham Chamber of Commerce?"].str.lower().map({'yes': True, 'no': False})
+    temp_df['Timestamp'] = pd.to_datetime(temp_df['Timestamp']).dt.date
+
+    dateNamePairing = pd.read_excel("DateNamePairings.xlsx", engine = 'calamine', sheet_name=['Sheet1'])['Sheet1']
+
+
+    dateNamePairing['Date'] = pd.to_datetime(dateNamePairing['Date']).dt.date
+
+
+    mappingPairs = {}
+    for ind in dateNamePairing.index:
+        mappingPairs[dateNamePairing.loc[ind]['Date']] = dateNamePairing.loc[ind]
+
+
+
+    st.session_state['Unknown Dates'] = []
+    eventName = []
+    nonMemberPrice = []
+    memberPrice = []
+    for ind in temp_df.index:
+        date = temp_df.loc[ind]['Timestamp']
+        if date in mappingPairs:
+            eventName.append(mappingPairs[date].iloc[1])
+            nonMemberPrice.append(mappingPairs[date].iloc[2])
+            memberPrice.append(mappingPairs[date].iloc[3])
+        else:
+            if date not in st.session_state['Unknown Dates']:
+                st.session_state['Unknown Dates'].append(date)
+            eventName.append(None)
+            nonMemberPrice.append(None)
+            memberPrice.append(None)
+    temp_df['eventName'] = eventName
+    temp_df['nonMemberPrice'] = nonMemberPrice
+    temp_df['memberPrice'] = memberPrice
+
+
     st.session_state['checkFile'] = False
     st.session_state['currentGraphs'] = []
+    st.session_state['df'] = temp_df
     #Reload the page once everything has been processed so the prompt to input data is removed
     st.rerun()
     
+print("Website reloaded!")
 
 #Once the file has been uploaded, this will always run
 if uploaded_file is not None and st.session_state['checkFile'] == False:
     df = st.session_state['df']
     st.dataframe(df)
 
-    scatterPlot = px.bar(df, x="Event Name", y="Num")
+    st.write("There are some dates needing updates!")
+    st.write(st.session_state['Unknown Dates'])
+    
+    scatterPlot = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
     addChartToPage(scatterPlot)
