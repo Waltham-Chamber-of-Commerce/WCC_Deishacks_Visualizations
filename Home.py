@@ -99,7 +99,7 @@ pl.io.templates.default = 'plotly'
 
 #Title with custom formatting
 st.markdown("<p style='text-align: center; font-size: 3em; font-weight: bold; color: #003478; margin-bottom: 0.5em; line-height: 1.2;'>Waltham Chamber of Commerce : Advanced Visualization Creator<p>", unsafe_allow_html=True)
-st.markdown('<p style="text-align: center; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created by: Rowan Scassellati, Caitlyn Pennie, and Isabel Roseth</p>', unsafe_allow_html=True)
+st.markdown('<p style="text-align: center; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created by: Rowan Scassellati, Caitlyn Pennie, Isabel Roseth, George Yan, and Jimkelly Percine</p>', unsafe_allow_html=True)
 st.html(
     '''
     <style>
@@ -253,6 +253,15 @@ print("Website reloaded!")
 if uploaded_file is not None and st.session_state['checkFile'] == False:
     df = st.session_state['df']
     st.dataframe(df)
+    
+
+    def calculateCost(row):
+        if row['Is your organization a member of the Waltham Chamber of Commerce?']:
+            return row["Number of attendees from your company?"] * row["memberPrice"]
+        else:
+            return row["Number of attendees from your company?"] * row["nonMemberPrice"]
+
+    df['Cost'] = df.apply(calculateCost, axis=1)
 
     if st.session_state['updatedMissingData']:
         st.toast("Information submitted, thank you for updating the data!")
@@ -283,5 +292,22 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
 
         # st.write(st.session_state['Unknown Dates'])
     
-    scatterPlot = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
-    addChartToPage(scatterPlot)
+    barChart = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
+    addChartToPage(barChart)
+
+    barChart2 = px.bar(df, x="eventName", y="Number of attendees from your company?")
+    addChartToPage(barChart2)
+
+    barChart3 = px.bar(df, x="eventName", y="Cost")
+    addChartToPage(barChart3)
+
+
+    grouped = df.groupby('eventName').sum(["Is your organization a member of the Waltham Chamber of Commerce?",  'Number of attendees from your company?', "Is your organization a sponsor of this event?", "Cost"])
+    st.write(grouped)
+
+
+    barChart4 = px.bar(grouped, x=grouped.index, y="Cost")
+    addChartToPage(barChart4)
+
+    barChart4 = px.bar(grouped, x=grouped.index, y="Number of attendees from your company?")
+    addChartToPage(barChart4)
