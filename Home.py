@@ -314,5 +314,24 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     addChartToPage(barPlot2)
    
     
+df['Revenue'] = df.apply(lambda row: row['Number of attendees from your company?'] * row['memberPrice'] 
+                        if row['Is your organization a member of the Waltham Chamber of Commerce?'] == 'true' 
+                        else row['Number of attendees from your company?'] * row['nonMemberPrice'], axis=1)
+
+grouped_revenue = df.groupby('eventName')['Revenue'].sum().reset_index()
+
+top_5_revenue = grouped_revenue.sort_values(by='Revenue', ascending=False).head(5)
+
+pie_chart = px.pie(
+    top_5_revenue,
+    names='eventName',
+    values='Revenue',
+    title='Top 5 Events by Revenue',
+    labels={'Revenue': 'Revenue ($)', 'eventName': 'Event Name'},
+)
+
+addChartToPage(pie_chart)
+
+    
     
     
