@@ -189,11 +189,11 @@ st.markdown("""
 h3 {
     text-align: center; 
     margin: auto;
-    font-size: 1.5em; 
+    font-size: 3em; 
     font-weight: bold; 
     color: #003478; 
     margin-bottom: 1.5em; 
-    line-height: 1.1; 
+    line-height: 1.2; 
     font-style: italic;
 }
 </style>
@@ -327,79 +327,6 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     )
     addChartToPage(barPlot2)
    
-    
-    # Calculate revenue for each event by multiplying the number of attendees with the respective price
-    df['Revenue'] = df.apply(lambda row: row['Number of attendees from your company?'] * row['memberPrice'] 
-                        if row['Is your organization a member of the Waltham Chamber of Commerce?'] == 'true' 
-                        else row['Number of attendees from your company?'] * row['nonMemberPrice'], axis=1)
-
-# Group by event name and sum the revenue
-    grouped_revenue = df.groupby('eventName')['Revenue'].sum().reset_index()
-
-# Sort the events by revenue in descending order and get the top 5
-    top_5_revenue = grouped_revenue.sort_values(by='Revenue', ascending=False).head(5)
-
-# Create a pie chart for the top 5 events by revenue
-    pie_chart = px.pie(
-        top_5_revenue,
-        names='eventName',
-        values='Revenue',
-        title='Top 5 Events by Revenue',
-        labels={'Revenue': 'Revenue ($)', 'eventName': 'Event Name'},
-    )
-
-    addChartToPage(pie_chart)
-
-
-# top 5 events by attendance 
-    grouped_attendance = df.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
-
-    top_5_attendance = grouped_attendance.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
-
-    pie_chart = px.pie(
-        top_5_attendance,
-        names='eventName',
-        values='Number of attendees from your company?',
-        title='Top 5 Events by Attendance',
-        labels={'Number of attendees from your company?': 'Number of Attendees', 'eventName': 'Event Name'},
-    )
-    
-    addChartToPage(pie_chart)
-
-
-    # top 5 events by members
-
-    df_members = df[df['Is your organization a member of the Waltham Chamber of Commerce?'] == True]
-
-    grouped_members = df_members.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
-
-    top_5_members = grouped_members.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
-
-    pie_chart_members = px.pie(
-        top_5_members,
-        names='eventName',
-        values='Number of attendees from your company?',
-        title='Top 5 Events by Members',
-        labels={'Number of attendees from your company?': 'Number of Members', 'eventName': 'Event Name'},
-    )
-    addChartToPage(pie_chart_members)
-
-    # top 5 events by non_members
-    df_non_members = df[df['Is your organization a member of the Waltham Chamber of Commerce?'] == False]
-
-    grouped_non_members = df_non_members.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
-
-    top_5_members = grouped_non_members.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
-
-    pie_chart_non_members = px.pie(
-        top_5_members,
-        names='eventName',
-        values='Number of attendees from your company?',
-        title='Top 5 Events by Non - Members',
-        labels={'Number of attendees from your company?': 'Number of Non - Members', 'eventName': 'Event Name'},
-    )
-    addChartToPage(pie_chart_non_members)
-    
 
     col1, col2, col3 = st.columns(3, vertical_alignment="center")
 
@@ -409,20 +336,96 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
         with cent_co:
             st.image("images/realWaltham1.jpeg")
         
-        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#firstSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created by: Rowan Scassellati, Caitlyn Pennie, Isabel Roseth, George Yan, and Jimkelly Percine</a> </div>', unsafe_allow_html=True)
+        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#firstSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Check out Visualizations about the Most Recent Event</a> </div>', unsafe_allow_html=True)
 
     with col2:
         left_co, cent_co,last_co = st.columns([0.1,0.8,0.1])
         with cent_co:
             st.image("images/realWaltham2.jpeg")
-        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#secondSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created by: Rowan Scassellati, Caitlyn Pennie, Isabel Roseth, George Yan, and Jimkelly Percine</a> </div>', unsafe_allow_html=True)
+        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#secondSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Check out Visualizations for the Top Performing Events</a> </div>', unsafe_allow_html=True)
 
     with col3:
         left_co, cent_co,last_co = st.columns([0.1,0.8,0.1])
         with cent_co:
             st.image("images/realWaltham3.jpeg")
-        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#thirdSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created by: Rowan Scassellati, Caitlyn Pennie, Isabel Roseth, George Yan, and Jimkelly Percine</a> </div>', unsafe_allow_html=True)
+        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#thirdSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Check out Visualizations to see Recent Trends in Events</a> </div>', unsafe_allow_html=True)
     
     st.subheader("Most Recent Event Visualizations", anchor="firstSection")  
     st.subheader("Top Performing Events", anchor="secondSection")  
+
+    pieCol1, pieCol2 = st.columns(2)
+    with pieCol1:
+        # Calculate revenue for each event by multiplying the number of attendees with the respective price
+        df['Revenue'] = df.apply(lambda row: row['Number of attendees from your company?'] * row['memberPrice'] 
+                            if row['Is your organization a member of the Waltham Chamber of Commerce?'] == True 
+                            else row['Number of attendees from your company?'] * row['nonMemberPrice'], axis=1)
+
+    # Group by event name and sum the revenue
+        grouped_revenue = df.groupby('eventName')['Revenue'].sum().reset_index()
+
+    # Sort the events by revenue in descending order and get the top 5
+        top_5_revenue = grouped_revenue.sort_values(by='Revenue', ascending=False).head(5)
+
+    # Create a pie chart for the top 5 events by revenue
+        pie_chart = px.pie(
+            top_5_revenue,
+            names='eventName',
+            values='Revenue',
+            title='Top 5 Events by Revenue',
+            labels={'Revenue': 'Revenue ($)', 'eventName': 'Event Name'},
+        )
+
+        addChartToPage(pie_chart)
+
+
+    # top 5 events by attendance 
+        grouped_attendance = df.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
+
+        top_5_attendance = grouped_attendance.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
+
+        pie_chart = px.pie(
+            top_5_attendance,
+            names='eventName',
+            values='Number of attendees from your company?',
+            title='Top 5 Events by Attendance',
+            labels={'Number of attendees from your company?': 'Number of Attendees', 'eventName': 'Event Name'},
+        )
+        
+        addChartToPage(pie_chart)
+
+    with pieCol2:
+        # top 5 events by members
+
+        df_members = df[df['Is your organization a member of the Waltham Chamber of Commerce?'] == True]
+
+        grouped_members = df_members.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
+
+        top_5_members = grouped_members.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
+
+        pie_chart_members = px.pie(
+            top_5_members,
+            names='eventName',
+            values='Number of attendees from your company?',
+            title='Top 5 Events by Members',
+            labels={'Number of attendees from your company?': 'Number of Members', 'eventName': 'Event Name'},
+        )
+        addChartToPage(pie_chart_members)
+
+        # top 5 events by non_members
+        
+        df_non_members = df[df['Is your organization a member of the Waltham Chamber of Commerce?'] == False]
+
+        grouped_non_members = df_non_members.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
+
+        top_5_members = grouped_non_members.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
+
+        pie_chart_non_members = px.pie(
+            top_5_members,
+            names='eventName',
+            values='Number of attendees from your company?',
+            title='Top 5 Events by Non - Members',
+            labels={'Number of attendees from your company?': 'Number of Non - Members', 'eventName': 'Event Name'},
+        )
+        addChartToPage(pie_chart_non_members)
+    
     st.subheader("Recent Event Trends", anchor="thirdSection")  
