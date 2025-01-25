@@ -183,7 +183,22 @@ def findPairings(dateRemoved = None):
     temp_df.dropna(subset=['eventName'], inplace=True)
     st.session_state['df'] = temp_df
 
-    
+
+st.markdown("""
+<style>
+h3 {
+    text-align: center; 
+    margin: auto;
+    font-size: 1.5em; 
+    font-weight: bold; 
+    color: #003478; 
+    margin-bottom: 1.5em; 
+    line-height: 1.1; 
+    font-style: italic;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 def updatePairingFile(date, title, eventMemberPrice, eventNonMemberPrice):
     currentDF = st.session_state['dateNamePairing']
@@ -272,7 +287,6 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
                         st.write(":red[Some data has not been updated yet. Please update all fields and then submit again.]")
 
         # st.write(st.session_state['Unknown Dates'])
-    
     barChart = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
     addChartToPage(barChart)
 
@@ -313,6 +327,28 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     )
     addChartToPage(barPlot2)
    
+    col1, col2, col3 = st.columns(3, vertical_alignment="center")
+
     
+    with col1:
+        left_co, cent_co,last_co = st.columns([0.1,0.8,0.1])
+        with cent_co:
+            st.image("images/realWaltham1.jpeg")
+        
+        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#firstSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created by: Rowan Scassellati, Caitlyn Pennie, Isabel Roseth, George Yan, and Jimkelly Percine</a> </div>', unsafe_allow_html=True)
+
+    with col2:
+        left_co, cent_co,last_co = st.columns([0.1,0.8,0.1])
+        with cent_co:
+            st.image("images/realWaltham2.jpeg")
+        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#secondSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created by: Rowan Scassellati, Caitlyn Pennie, Isabel Roseth, George Yan, and Jimkelly Percine</a> </div>', unsafe_allow_html=True)
+
+    with col3:
+        left_co, cent_co,last_co = st.columns([0.1,0.8,0.1])
+        with cent_co:
+            st.image("images/realWaltham3.jpeg")
+        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#thirdSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Created by: Rowan Scassellati, Caitlyn Pennie, Isabel Roseth, George Yan, and Jimkelly Percine</a> </div>', unsafe_allow_html=True)
     
-    
+    st.subheader("Most Recent Event Visualizations", anchor="firstSection")  
+    st.subheader("Top Performing Events", anchor="secondSection")  
+    st.subheader("Recent Event Trends", anchor="thirdSection")  
