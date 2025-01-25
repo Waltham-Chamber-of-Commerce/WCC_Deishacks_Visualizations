@@ -2,28 +2,9 @@
 import pandas as pd
 import numpy as np
 import plotly as pl
-
-import matplotlib.pyplot as plt
-import os
-import xarray as xr
-
 import streamlit as st 
-import matplotlib
-import mpld3
-import streamlit.components.v1 as components
-import matplotlib as mpl
-from matplotlib import cm
-from matplotlib import colors
-import datetime
-import plotly.graph_objects as go
-import statistics
 import plotly.express as px
-from plotly.subplots import make_subplots
 import re
-from io import BytesIO
-import streamlit as st
-import pandas as pd
-from io import StringIO
 
 
 #Function to add any chart to the page, and account for the click interactivity
