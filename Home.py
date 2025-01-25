@@ -5,6 +5,10 @@ import plotly as pl
 import streamlit as st 
 import plotly.express as px
 import re
+from bs4 import BeautifulSoup
+import requests
+from ics import Calendar, Event
+from datetime import datetime
 import datetime
 
 
@@ -430,6 +434,19 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
         addChartToPage(pie_chart_non_members)
     
     st.subheader("Recent Event Trends", anchor="thirdSection")  
+    
+    
+    ### trends 
+    grouped_cost_revenue = df.groupby('eventName').agg({'Cost': 'sum', 'Revenue': 'sum'}).reset_index()
+
+    scatter_plot_cost = px.scatter(grouped_cost_revenue, 
+                          x='Cost', 
+                          y='Revenue', 
+                          color='eventName', 
+                          title='Cost vs. Revenue for Each Event')
+    
+    addChartToPage(scatter_plot_cost)
+
 
 
 
