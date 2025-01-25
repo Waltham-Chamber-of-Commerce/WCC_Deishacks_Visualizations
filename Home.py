@@ -314,24 +314,74 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     addChartToPage(barPlot2)
    
     
-df['Revenue'] = df.apply(lambda row: row['Number of attendees from your company?'] * row['memberPrice'] 
+    # Calculate revenue for each event by multiplying the number of attendees with the respective price
+    df['Revenue'] = df.apply(lambda row: row['Number of attendees from your company?'] * row['memberPrice'] 
                         if row['Is your organization a member of the Waltham Chamber of Commerce?'] == 'true' 
                         else row['Number of attendees from your company?'] * row['nonMemberPrice'], axis=1)
 
-grouped_revenue = df.groupby('eventName')['Revenue'].sum().reset_index()
+# Group by event name and sum the revenue
+    grouped_revenue = df.groupby('eventName')['Revenue'].sum().reset_index()
 
-top_5_revenue = grouped_revenue.sort_values(by='Revenue', ascending=False).head(5)
+# Sort the events by revenue in descending order and get the top 5
+    top_5_revenue = grouped_revenue.sort_values(by='Revenue', ascending=False).head(5)
 
-pie_chart = px.pie(
-    top_5_revenue,
-    names='eventName',
-    values='Revenue',
-    title='Top 5 Events by Revenue',
-    labels={'Revenue': 'Revenue ($)', 'eventName': 'Event Name'},
-)
+# Create a pie chart for the top 5 events by revenue
+    pie_chart = px.pie(
+        top_5_revenue,
+        names='eventName',
+        values='Revenue',
+        title='Top 5 Events by Revenue',
+        labels={'Revenue': 'Revenue ($)', 'eventName': 'Event Name'},
+    )
 
-addChartToPage(pie_chart)
+    addChartToPage(pie_chart)
 
+
+# top 5 events by attendance 
+    grouped_attendance = df.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
+
+    top_5_attendance = grouped_attendance.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
+
+    pie_chart = px.pie(
+        top_5_attendance,
+        names='eventName',
+        values='Number of attendees from your company?',
+        title='Top 5 Events by Attendance',
+        labels={'Number of attendees from your company?': 'Number of Attendees', 'eventName': 'Event Name'},
+    )
     
-    
-    
+    addChartToPage(pie_chart)
+
+
+    # top 5 events by members
+
+    df_members = df[df['Is your organization a member of the Waltham Chamber of Commerce?'] == True]
+
+    grouped_members = df_members.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
+
+    top_5_members = grouped_members.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
+
+    pie_chart_members = px.pie(
+        top_5_members,
+        names='eventName',
+        values='Number of attendees from your company?',
+        title='Top 5 Events by Members',
+        labels={'Number of attendees from your company?': 'Number of Members', 'eventName': 'Event Name'},
+    )
+    addChartToPage(pie_chart_members)
+
+    # top 5 events by non_members
+    df_non_members = df[df['Is your organization a member of the Waltham Chamber of Commerce?'] == False]
+
+    grouped_non_members = df_non_members.groupby('eventName')['Number of attendees from your company?'].sum().reset_index()
+
+    top_5_members = grouped_non_members.sort_values(by='Number of attendees from your company?', ascending=False).head(5)
+
+    pie_chart_non_members = px.pie(
+        top_5_members,
+        names='eventName',
+        values='Number of attendees from your company?',
+        title='Top 5 Events by Non - Members',
+        labels={'Number of attendees from your company?': 'Number of Non - Members', 'eventName': 'Event Name'},
+    )
+    addChartToPage(pie_chart_non_members)
