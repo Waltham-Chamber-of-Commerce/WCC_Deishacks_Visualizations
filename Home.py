@@ -293,17 +293,26 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     barChart4 = px.bar(grouped, x=grouped.index, y="Number of attendees from your company?")
     addChartToPage(barChart4)
 
+
+    grouped2 = df.groupby(["Is your organization a member of the Waltham Chamber of Commerce?", 'eventName']).sum(['Number of attendees from your company?'])
+    grouped2.reset_index(inplace =True)
+    grouped2["Is your organization a member of the Waltham Chamber of Commerce?"] = grouped2["Is your organization a member of the Waltham Chamber of Commerce?"].astype(str).str.lower().map({"true": 'Member', "false": 'Not a Member'})
     
-    scatterPlot2 = px.bar(
-    df,
-    x="Number of attendees from your company?",
-    y="Is your organization a member of the Waltham Chamber of Commerce?",
+    barPlot2 = px.bar(
+    grouped2,
+    x="eventName",
+    y="Number of attendees from your company?",
     color="Is your organization a member of the Waltham Chamber of Commerce?", 
     title="Attendance by Membership Status",
     labels={
         "Number of attendees from your company?": "Number of Attendees",
         "Is your organization a member of the Waltham Chamber of Commerce?": "Membership Status",
+        
     },
     text="Number of attendees from your company?", 
     )
-    addChartToPage(scatterPlot2)
+    addChartToPage(barPlot2)
+   
+    
+    
+    
