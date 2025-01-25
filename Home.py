@@ -5,6 +5,7 @@ import plotly as pl
 import streamlit as st 
 import plotly.express as px
 import re
+import datetime
 
 
 #Function to add any chart to the page, and account for the click interactivity
@@ -287,8 +288,8 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
                         st.write(":red[Some data has not been updated yet. Please update all fields and then submit again.]")
 
         # st.write(st.session_state['Unknown Dates'])
-    barChart = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
-    addChartToPage(barChart)
+    # barChart = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
+    # addChartToPage(barChart)
 
     barChart2 = px.bar(df, x="eventName", y="Number of attendees from your company?")
     addChartToPage(barChart2)
@@ -429,3 +430,52 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
         addChartToPage(pie_chart_non_members)
     
     st.subheader("Recent Event Trends", anchor="thirdSection")  
+
+
+
+
+
+
+
+
+
+
+
+    years = st.number_input("How many years of data would you like to examine?", min_value=1, value = 3)
+    selected_value = st.selectbox("What type of values would you like to explore?", ["Total Event Revenue", "Total Attendance Numbers"], index=0)
+
+    
+
+    if selected_value == "Total Event Revenue":
+        grouped3 = df.groupby(['eventName']).agg({'Number of attendees from your company?': 'sum', 'Timestamp': 'mean', 'Revenue': 'sum'})
+        grouped3.reset_index(inplace =True)
+        y_axis_years = "Revenue"
+    elif selected_value == "Total Attendance Numbers":
+        grouped3 = df.groupby(["Is your organization a member of the Waltham Chamber of Commerce?", 'eventName']).agg({'Number of attendees from your company?': 'sum', 'Timestamp': 'mean', 'Revenue': 'sum'})
+        # grouped3 = df.groupby(["Is your organization a member of the Waltham Chamber of Commerce?", 'eventName']).sum(['Number of attendees from your company?'])
+        grouped3.reset_index(inplace =True)
+        grouped3["Is your organization a member of the Waltham Chamber of Commerce?"] = grouped3["Is your organization a member of the Waltham Chamber of Commerce?"].astype(str).str.lower().map({"true": 'Member', "false": 'Not a Member'})
+        y_axis_years = "Number of attendees from your company?"
+
+
+
+    # Convert the 'date' column to datetime objects
+    grouped3['Timestamp'] = pd.to_datetime(grouped3['Timestamp'])
+
+    # Calculate the date one year ago from today
+    years_ago = datetime.datetime.now() - datetime.timedelta(days=365*years)
+    past_years = grouped3[grouped3['Timestamp'] >= years_ago]
+    
+    barChart = px.bar(past_years, x="Timestamp", y=y_axis_years, title = "Revenue From " +str(years) + " Years of Events", hover_data=["eventName"], labels={
+            "Timestamp": "Event Date",
+            "eventName": "Event Name",
+        })
+    if selected_value == "Total Attendance Numbers":
+        barChart = px.bar(past_years, x="Timestamp", color = "Is your organization a member of the Waltham Chamber of Commerce?", y=y_axis_years, title="Attendance by Membership Status", hover_data=["eventName"],
+        labels={
+            "Number of attendees from your company?": "Number of Attendees",
+            "Is your organization a member of the Waltham Chamber of Commerce?": "Membership Status",
+            "Timestamp": "Event Date",
+            "eventName": "Event Name",
+        },)
+    addChartToPage(barChart)
