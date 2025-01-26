@@ -1,10 +1,7 @@
-matplotlib==3.9.3
-mpld3==0.5.10
-numpy==2.2.0
+beautifulsoup4==4.12.3
+ics==0.7.2
+numpy==2.2.2
 pandas==2.2.3
 plotly==5.23.0
-scikit_learn==1.6.0
+Requests==2.32.3
 streamlit==1.37.1
-xarray==2024.6.0
-python-calamine
-xlsxwriter
