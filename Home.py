@@ -198,6 +198,7 @@ h3 {
     font-weight: bold; 
     color: #003478; 
     margin-bottom: 1.5em; 
+    margin-top: 1.5em;
     line-height: 1.2; 
     font-style: italic;
 }
@@ -341,7 +342,7 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
         with cent_co:
             st.image("images/realWaltham1.jpeg")
         
-        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#firstSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Check out Visualizations about the Most Recent Event</a> </div>', unsafe_allow_html=True)
+        st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#firstSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Check out Information about Specific Events</a> </div>', unsafe_allow_html=True)
 
     with col2:
         left_co, cent_co,last_co = st.columns([0.1,0.8,0.1])
@@ -355,7 +356,39 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
             st.image("images/realWaltham3.jpeg")
         st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#thirdSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Check out Visualizations to see Recent Trends in Events</a> </div>', unsafe_allow_html=True)
     
-    st.subheader("Most Recent Event Visualizations", anchor="firstSection")  
+    st.subheader("Information for Specific Events", anchor="firstSection")  
+
+
+    selectedEvent = st.selectbox("What event would you like to learn more about?", options = df.sort_values(by='Timestamp', ascending = False)['eventName'].unique())
+
+
+
+
+    # Calculate the most recent date
+    
+    recent_event = df[df['eventName'] == selectedEvent].reset_index()
+    dateOfEvent = recent_event['Timestamp'].iloc[0]
+
+    # st.write(recent_event)
+
+    eventName = recent_event[['eventName'][0]][0]
+    groupedData = recent_event.groupby('Is your organization a member of the Waltham Chamber of Commerce?')[['Number of attendees from your company?']].sum().reset_index()
+
+    numAttendeesNotMember = groupedData.iloc[0].iloc[1]
+    numAttendeesMember = groupedData.iloc[1].iloc[1]
+    numAttendeesTotal = numAttendeesMember + numAttendeesNotMember
+
+    totalRevenue = f"${int(recent_event['Cost'].sum()):,}"
+    numOfOrganizations = len(recent_event.index)
+
+
+
+    st.markdown("<p style='text-align: center; font-size: 3em; font-weight: bold; color: #003478; margin-bottom: 0.5em; line-height: 1.2;'>" + 
+                "At the last event, " + eventName + ", which was on " + dateOfEvent.strftime("%B %d, %Y") + ", "+ str(numAttendeesTotal)+" people attended (" + str(numAttendeesMember) + " members and " + str(numAttendeesNotMember) + " non-members), representing " + str(numOfOrganizations) + " different organizations, and raising " + totalRevenue + " in revenue<p>", unsafe_allow_html=True)
+
+
+
+
     st.subheader("Top Performing Events", anchor="secondSection")  
 
     pieCol1, pieCol2 = st.columns(2)
