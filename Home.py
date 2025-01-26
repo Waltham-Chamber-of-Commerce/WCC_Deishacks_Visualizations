@@ -53,6 +53,9 @@ tabs_font_css = """
 div[class*="stCheckbox"] label p {
   font-size: 20px;
 }
+img[data-testid="stLogo"] {
+            height: 5rem;
+}
 
 div[class*="stMultiSelect"] label p {
   font-size: 20px;
