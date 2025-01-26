@@ -341,7 +341,7 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
 
 
     st.markdown("<p style='text-align: center; font-size: 3em; font-weight: bold; color: #003478; margin-bottom: 0.5em; line-height: 1.2;'>" + 
-                "At the last event, " + eventName + ", which was on " + dateOfEvent.strftime("%B %d, %Y") + ", "+ str(numAttendeesTotal)+" people attended (" + str(numAttendeesMember) + " members and " + str(numAttendeesNotMember) + " non-members), representing " + str(numOfOrganizations) + " different organizations, and raising " + totalRevenue + " in revenue<p>", unsafe_allow_html=True)
+                "At the event, " + eventName + ", which was on " + dateOfEvent.strftime("%B %d, %Y") + ", "+ str(numAttendeesTotal)+" people attended (" + str(numAttendeesMember) + " members and " + str(numAttendeesNotMember) + " non-members), representing " + str(numOfOrganizations) + " different organizations, and raising " + totalRevenue + " in revenue<p>", unsafe_allow_html=True)
 
 
     st.divider()
