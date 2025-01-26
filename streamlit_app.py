@@ -145,7 +145,7 @@ h3 {
     font-weight: bold; 
     color: #003478; 
     margin-bottom: 1.5em; 
-    margin-top: 1.5em;
+    margin-top: 0.75em;
     line-height: 1.2; 
     font-style: italic;
 }
@@ -194,14 +194,14 @@ if uploaded_file is not None and st.session_state['checkFile'] == True:
     #Reload the page once everything has been processed so the prompt to input data is removed
     st.rerun()
     
-print("Website reloaded!")
+# print("Website reloaded!")
 
 
 
 #Once the file has been uploaded, this will always run
 if uploaded_file is not None and st.session_state['checkFile'] == False:
     df = st.session_state['df']
-    st.dataframe(df)
+    # st.dataframe(df)
     
 
     def calculateCost(row):
@@ -243,45 +243,45 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     # barChart = px.bar(df, x="Timestamp", y="Number of attendees from your company?")
     # addChartToPage(barChart)
 
-    barChart2 = px.bar(df, x="eventName", y="Number of attendees from your company?")
-    addChartToPage(barChart2)
+    # barChart2 = px.bar(df, x="eventName", y="Number of attendees from your company?")
+    # addChartToPage(barChart2)
 
-    barChart3 = px.bar(df, x="eventName", y="Cost")
-    addChartToPage(barChart3)
+    # barChart3 = px.bar(df, x="eventName", y="Cost")
+    # addChartToPage(barChart3)
 
 
     grouped = df.groupby('eventName').sum(["Is your organization a member of the Waltham Chamber of Commerce?",  'Number of attendees from your company?', "Is your organization a sponsor of this event?", "Cost"])
-    st.write(grouped)
+    # st.write(grouped)
 
 
-    barChart4 = px.bar(grouped, x=grouped.index, y="Cost")
-    addChartToPage(barChart4)
+    # barChart4 = px.bar(grouped, x=grouped.index, y="Cost")
+    # addChartToPage(barChart4)
 
-    barChart4 = px.bar(grouped, x=grouped.index, y="Number of attendees from your company?")
-    addChartToPage(barChart4)
+    # barChart4 = px.bar(grouped, x=grouped.index, y="Number of attendees from your company?")
+    # addChartToPage(barChart4)
 
 
-    grouped2 = df.groupby(["Is your organization a member of the Waltham Chamber of Commerce?", 'eventName']).sum(['Number of attendees from your company?'])
-    grouped2.reset_index(inplace =True)
-    grouped2["Is your organization a member of the Waltham Chamber of Commerce?"] = grouped2["Is your organization a member of the Waltham Chamber of Commerce?"].astype(str).str.lower().map({"true": 'Member', "false": 'Not a Member'})
+    # grouped2 = df.groupby(["Is your organization a member of the Waltham Chamber of Commerce?", 'eventName']).sum(['Number of attendees from your company?'])
+    # grouped2.reset_index(inplace =True)
+    # grouped2["Is your organization a member of the Waltham Chamber of Commerce?"] = grouped2["Is your organization a member of the Waltham Chamber of Commerce?"].astype(str).str.lower().map({"true": 'Member', "false": 'Not a Member'})
     
-    barPlot2 = px.bar(
-    grouped2,
-    x="eventName",
-    y="Number of attendees from your company?",
-    color="Is your organization a member of the Waltham Chamber of Commerce?", 
-    title="Attendance by Membership Status",
-    labels={
-        "Number of attendees from your company?": "Number of Attendees",
-        "Is your organization a member of the Waltham Chamber of Commerce?": "Membership Status",
+    # barPlot2 = px.bar(
+    # grouped2,
+    # x="eventName",
+    # y="Number of attendees from your company?",
+    # color="Is your organization a member of the Waltham Chamber of Commerce?", 
+    # title="Attendance by Membership Status",
+    # labels={
+    #     "Number of attendees from your company?": "Number of Attendees",
+    #     "Is your organization a member of the Waltham Chamber of Commerce?": "Membership Status",
         
-    },
-    text="Number of attendees from your company?", 
-    )
-    addChartToPage(barPlot2)
+    # },
+    # text="Number of attendees from your company?", 
+    # )
+    # addChartToPage(barPlot2)
    
 
-    col1, col2, col3 = st.columns(3, vertical_alignment="center")
+    col1, col2, col3 = st.columns(3, vertical_alignment="top")
 
     
     with col1:
@@ -303,6 +303,8 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
             st.image("images/realWaltham3.jpeg")
         st.markdown('<div style="width: 100%; text-align: center;"> <a target="_self" href="#thirdSection" style="text-align: center; margin: auto; font-size: 1.5em; font-weight: bold; color: #003478; margin-bottom: 1.5em; line-height: 1.1; font-style: italic;">Check out Visualizations to see Recent Trends in Events</a> </div>', unsafe_allow_html=True)
     
+    st.write("")
+    st.divider()
     st.subheader("Information for Specific Events", anchor="firstSection")  
 
 
@@ -316,14 +318,14 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     recent_event = df[df['eventName'] == selectedEvent].reset_index()
     dateOfEvent = recent_event['Timestamp'].iloc[0]
 
-    # st.write(recent_event)
+
 
     eventName = recent_event[['eventName'][0]][0]
     groupedData = recent_event.groupby('Is your organization a member of the Waltham Chamber of Commerce?')[['Number of attendees from your company?']].sum().reset_index()
 
     numAttendeesMember = 0
     numAttendeesNotMember = 0
-    st.write(groupedData)
+
     for ind in groupedData.index:
         if (groupedData['Is your organization a member of the Waltham Chamber of Commerce?'][ind]):
             numAttendeesMember = groupedData.iloc[ind].iloc[1]
@@ -342,7 +344,7 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
                 "At the last event, " + eventName + ", which was on " + dateOfEvent.strftime("%B %d, %Y") + ", "+ str(numAttendeesTotal)+" people attended (" + str(numAttendeesMember) + " members and " + str(numAttendeesNotMember) + " non-members), representing " + str(numOfOrganizations) + " different organizations, and raising " + totalRevenue + " in revenue<p>", unsafe_allow_html=True)
 
 
-
+    st.divider()
 
     st.subheader("Top Performing Events", anchor="secondSection")  
 
@@ -421,19 +423,20 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
         )
         addChartToPage(pie_chart_non_members)
     
+    st.divider()
     st.subheader("Recent Event Trends", anchor="thirdSection")  
     
     
     ### trends 
-    grouped_cost_revenue = df.groupby('eventName').agg({'Cost': 'sum', 'Revenue': 'sum'}).reset_index()
+    # grouped_cost_revenue = df.groupby('eventName').agg({'Cost': 'sum', 'Revenue': 'sum'}).reset_index()
 
-    scatter_plot_cost = px.scatter(grouped_cost_revenue, 
-                          x='Cost', 
-                          y='Revenue', 
-                          color='eventName', 
-                          title='Cost vs. Revenue for Each Event')
+    # scatter_plot_cost = px.scatter(grouped_cost_revenue, 
+    #                       x='Cost', 
+    #                       y='Revenue', 
+    #                       color='eventName', 
+    #                       title='Cost vs. Revenue for Each Event')
     
-    addChartToPage(scatter_plot_cost)
+    # addChartToPage(scatter_plot_cost)
 
     
     years = st.number_input("How many years of data would you like to examine?", min_value=1, value = 3)
