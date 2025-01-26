@@ -169,7 +169,7 @@ if uploaded_file is not None and st.session_state['checkFile'] == True:
     xls = pd.read_excel(uploaded_file, sheet_name=['Form Responses 1'])
 
     # Access individual sheets using sheet names
-    temp_df = xls['Sheet1']
+    temp_df = xls['Form Responses 1']
 
     temp_df["Is your organization a sponsor of this event?"] = temp_df["Is your organization a sponsor of this event?"].str.lower().map({'yes': True, 'no': False})
     temp_df["Is your organization a member of the Waltham Chamber of Commerce?"] = temp_df["Is your organization a member of the Waltham Chamber of Commerce?"].str.lower().map({'yes': True, 'no': False})
