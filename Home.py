@@ -444,3 +444,4 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
                           title='Cost vs. Revenue for Each Event')
     
     addChartToPage(scatter_plot_cost)
+
