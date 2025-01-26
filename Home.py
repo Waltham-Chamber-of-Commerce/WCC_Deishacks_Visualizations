@@ -14,69 +14,13 @@ import datetime
 
 #Function to add any chart to the page, and account for the click interactivity
 def addChartToPage(fig):
-    #Keep track of all current graphs
-    if fig not in st.session_state['currentGraphs']:
-        st.session_state['currentGraphs'].append(fig)
-    
     #Display the graph
-    chart = st.plotly_chart(fig, on_select="rerun", selection_mode=["points"])
-
-    # If points are selected on the chart (clicked on)
-    if chart['selection']['points']:
-        for point in chart['selection']['points']:
-            # Get hover template from first or second trace (fallback for heatmaps because of the way they are implemented)
-            printout = fig.data[0].hovertemplate
-            if (printout == None):
-                printout = fig.data[1].hovertemplate
-                
-            with st.container():
-                # Clean up the hover template format so that it works with the .format command from python
-                printout = printout.replace("%{", "{")
-                printout = printout.replace("<extra></extra>", "")
-                printout = printout.replace("<br>", " ")
-                
-                # Find all variables in the template (anything between {} brackets)
-                listOfVariables = re.findall("{(?:[^{}])*}", printout)
-                
-                # Process each variable in the template
-                for initialVar in listOfVariables:
-                    var = initialVar[1:-1]  # Remove brackets
-                    
-                    # Handle formatting qualifiers (e.g., :.2f)
-                    try:
-                        index = var.index(":")
-                        qualifier = var[index:]
-                        var = var[:index]
-                    except:
-                        qualifier = ""
-                        var = var
-                    
-                    # Special handling for marker size and custom data, because they are treated differently in the hoverdata
-                    if var == "marker.size":
-                        var = "marker_size"
-                    if "customdata" in var:
-                        data = point["customdata"][int(var[-2:-1])]
-                    else:
-                        data = point[var]
-                    
-                    # Format the data and replace in template
-                    formatting = ("{" + qualifier + "}")
-                    final = formatting.format(data)
-                    printout = printout.replace(initialVar, final)
-                    
-                # Display the formatted hover text as a printout beneath the graph
-                st.write(printout)
-                
-
-    #If the figure hasn't been added to the workbook, display a button to allow users to add the graph
-    if fig not in st.session_state['workbookGraphs']:
-        if st.button("Add this graph to the workbook", key = fig):
-            st.session_state['workbookGraphs'].append(fig)
-            st.write("Graph added!")
-    else:
-        st.write("This graph is in the workbook!")
+    st.plotly_chart(fig, on_select="rerun", selection_mode=["points"])
 
 
+
+# Configure the default Streamlit page layout - full width with collapsed sidebar
+st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 #Set a plotly default, which is necessary for the sankey graph to display correctly on streamlit
 pl.io.templates.default = 'plotly'
