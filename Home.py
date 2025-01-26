@@ -519,3 +519,6 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
             "eventName": "Event Name",
         },)
     addChartToPage(barChart)
+    
+st.logo("images/Logo.png")
+
