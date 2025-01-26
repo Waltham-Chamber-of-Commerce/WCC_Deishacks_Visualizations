@@ -166,7 +166,7 @@ if uploaded_file is not None and st.session_state['checkFile'] == True:
     st.session_state['dataFile'] = uploaded_file
 
     #Read the excel file and different sheets, using a faster calamine engine
-    xls = pd.read_excel(uploaded_file, sheet_name=['Sheet1'])
+    xls = pd.read_excel(uploaded_file, sheet_name=['Form Responses 1'])
 
     # Access individual sheets using sheet names
     temp_df = xls['Sheet1']
