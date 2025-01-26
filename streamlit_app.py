@@ -476,6 +476,8 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
             "Timestamp": "Event Date",
             "eventName": "Event Name",
         },)
+
+    barChart.update_traces(width=100000000*years)
     addChartToPage(barChart)
     
 st.logo("images/Logo.png")
