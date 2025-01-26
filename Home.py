@@ -449,26 +449,17 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
 
 
 
-
-
-
-
-
-
-
-
-
     years = st.number_input("How many years of data would you like to examine?", min_value=1, value = 3)
     selected_value = st.selectbox("What type of values would you like to explore?", ["Total Event Revenue", "Total Attendance Numbers"], index=0)
 
     
 
     if selected_value == "Total Event Revenue":
-        grouped3 = df.groupby(['eventName']).agg({'Number of attendees from your company?': 'sum', 'Timestamp': 'mean', 'Revenue': 'sum'})
+        grouped3 = df.groupby(['eventName']).agg({'Number of attendees from your company?': 'sum', 'Timestamp': 'first', 'Revenue': 'sum'})
         grouped3.reset_index(inplace =True)
         y_axis_years = "Revenue"
     elif selected_value == "Total Attendance Numbers":
-        grouped3 = df.groupby(["Is your organization a member of the Waltham Chamber of Commerce?", 'eventName']).agg({'Number of attendees from your company?': 'sum', 'Timestamp': 'mean', 'Revenue': 'sum'})
+        grouped3 = df.groupby(["Is your organization a member of the Waltham Chamber of Commerce?", 'eventName']).agg({'Number of attendees from your company?': 'sum', 'Timestamp': 'first', 'Revenue': 'sum'})
         # grouped3 = df.groupby(["Is your organization a member of the Waltham Chamber of Commerce?", 'eventName']).sum(['Number of attendees from your company?'])
         grouped3.reset_index(inplace =True)
         grouped3["Is your organization a member of the Waltham Chamber of Commerce?"] = grouped3["Is your organization a member of the Waltham Chamber of Commerce?"].astype(str).str.lower().map({"true": 'Member', "false": 'Not a Member'})
