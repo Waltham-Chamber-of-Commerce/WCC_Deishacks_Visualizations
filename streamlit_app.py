@@ -321,8 +321,16 @@ if uploaded_file is not None and st.session_state['checkFile'] == False:
     eventName = recent_event[['eventName'][0]][0]
     groupedData = recent_event.groupby('Is your organization a member of the Waltham Chamber of Commerce?')[['Number of attendees from your company?']].sum().reset_index()
 
-    numAttendeesNotMember = groupedData.iloc[0].iloc[1]
-    numAttendeesMember = groupedData.iloc[1].iloc[1]
+    numAttendeesMember = 0
+    numAttendeesNotMember = 0
+    st.write(groupedData)
+    for ind in groupedData.index:
+        if (groupedData['Is your organization a member of the Waltham Chamber of Commerce?'][ind]):
+            numAttendeesMember = groupedData.iloc[ind].iloc[1]
+        else:
+            numAttendeesNotMember = groupedData.iloc[0].iloc[1]
+    
+
     numAttendeesTotal = numAttendeesMember + numAttendeesNotMember
 
     totalRevenue = f"${int(recent_event['Cost'].sum()):,}"
